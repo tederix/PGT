@@ -1,6 +1,6 @@
 
 
-from iapws import IAPWS97 as IAPWS97
+from iapws import IAPWS97
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
