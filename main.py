@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 import pandas as pd
+import time
+
+
 
 st.write("# Задание 1")
 st.write("""Построить процесс расширения пара в турбине. Определение расходов пара на входе в турбину (G0) и в конденсатор (Gк). Получить зависимость КПД ПТУ от параметра заданного в таблице.""")
