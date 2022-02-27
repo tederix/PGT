@@ -6,18 +6,23 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 
+st.write("# Задание 1")
+st.write("""Построить процесс расширения пара в турбине. Определение расходов пара на входе в турбину (G0) и в конденсатор (Gк). Получить зависимость КПД ПТУ от параметра заданного в таблице.""")
+st.write("""# """)
 
+st.write(" *Исходные данные:* ")
+
+age = st.slider('Укажите максимальную границу Pпп', min_value = 2.1, max_value = 4.0, step = 0.1)
+age = age + 0.01
 
 Ne = 810e6
 p0 = 24.2e6
 t0 = 550
 T0 = t0+273.15
-
-p_pp_min = 2e6
-p_pp_max = 4e6
-
-P_pp = list(np.arange(2, 4.1, 0.1)) #тут меняем
+P_pp = list(np.arange(2, age, 0.1)) #тут меняем
 ppp = [p*1e6 for p in P_pp]
+p_pp_min = float(ppp[0])
+p_pp_max = float(ppp[-1])
 tpp = 550
 Tpp = tpp+273.15
 pk = 3.7e3
@@ -29,23 +34,19 @@ delta_p = 0.03*p_pp_max
 
 z = 8
 
-st.write("# Задание 1")
-st.write("""Построить процесс расширения пара в турбине. Определение расходов пара на входе в турбину (G0) и в конденсатор (Gк). Получить зависимость КПД ПТУ от параметра заданного в таблице.""")
 
 
 
-st.write("""# """)
-
-st.write(" *Исходные данные:* ")
 
 st.write(""" P0 = """ + str(p0*10**(-6)) + """ МПа""")
 st.write(""" t0 = """ + str(t0) + """ C""")
-st.write(""" Pпп = """ + str(p_pp_min*10**(-6)) + " - " + str(p_pp_max*10**(-6)) + """ МПа""")
+st.write(""" Pпп = """ + str(p_pp_min*10**(-6)) + " - " + str('{:.2}'.format(p_pp_max*10**(-6))) + """ МПа""")
 st.write(""" tпп = """ + str(tpp) + """ C """)
 st.write(""" Pк = """ + str(pk*10**(-3)) + """ кПа """)
 st.write(""" tпв = """ + str(tpv) + """ C """)
 st.write(""" Nэ = """ + str(Ne*10**(-6)) + """ МВт """)
 st.write(""" Z = """ + str(z) + """ шт """)
+
 
 
 st.write("""# """)
