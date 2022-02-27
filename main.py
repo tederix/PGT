@@ -1,4 +1,5 @@
 
+pip install iapws
 from iapws import IAPWS97 as IAPWS97
 import matplotlib.pyplot as plt
 import numpy as np
