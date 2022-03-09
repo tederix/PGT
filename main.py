@@ -57,7 +57,7 @@ st.write("""# """)
 st.write(" *Решение:* ")
 
 
-def Calculate_eta(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
+def Calculate_eta_G0_Gk(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
 
     point_0 = IAPWS97(P=p_0*10**(-6), T=T_0)
     s_0 = point_0.s
@@ -146,185 +146,18 @@ def Calculate_eta(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
     G_0 = N_e/(H_i*eta_m*eta_eg*(10**3))
     G_k = N_e/((h_k-h_k_v)*eta_m*eta_eg*(10**3))*(1/eta_ir-1)
 
-    return eta_ir
-def Calculate_G0(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
-    point_0 = IAPWS97(P=p_0 * 10 ** (-6), T=T_0)
-    s_0 = point_0.s
-    h_0 = point_0.h
-    v_0 = point_0.v
-    p_0_ = p_0 - 0.05 * p_0
-    point_p_0_ = IAPWS97(P=p_0_ * 10 ** (-6), h=h_0)
-    t_0_ = point_p_0_.T - 273.15
-    s_0_ = point_p_0_.s
-    v_0_ = point_p_0_.v
+    return eta_ir, G_0, G_k
 
-    p_1t = p_pp + 0.1 * p_pp
-    point_1t = IAPWS97(P=p_1t * 10 ** (-6), s=s_0)
-    t_1t = point_1t.T - 273.15
-    h_1t = point_1t.h
-    v_1t = point_1t.v
 
-    point_pp = IAPWS97(P=p_pp * 10 ** (-6), T=T_pp)
-    h_pp = point_pp.h
-    s_pp = point_pp.s
-    v_pp = point_pp.v
+eta, G0, Gk = [], [], []
+for p in ppp:
+    eta_ = Calculate_eta_G0_Gk(N_e=Ne, p_0=p0, T_0=T0, p_pp=p, T_pp=Tpp, p_k=pk, T_pv=Tpv)
+    eta.append(eta_[0])
+    G0.append(eta_[1])
+    Gk.append(eta_[2])
 
-    H_0 = h_0 - h_1t
-    eta_oi = 0.85
-    H_i_cvd = H_0 * eta_oi
 
-    h_1 = h_0 - H_i_cvd
-    point_1 = IAPWS97(P=p_1t * 10 ** (-6), h=h_1)
-    s_1 = point_1.s
-    T_1 = point_1.T
-    v_1 = point_1.v
-    p_pp_ = p_pp - 0.03 * p_pp
-    point_pp_ = IAPWS97(P=p_pp_ * 10 ** (-6), h=h_pp)
-    s_pp_ = point_pp_.s
-    v_pp_ = point_pp_.v
-    point_kt = IAPWS97(P=p_k * 10 ** (-6), s=s_pp)
-    T_kt = point_kt.T
-    h_kt = point_kt.h
-    v_kt = point_kt.v
-    s_kt = s_pp
-    H_0_csdcnd = h_pp - h_kt
-    eta_oi = 0.85
-    H_i_csdcnd = H_0_csdcnd * eta_oi
-    h_k = h_pp - H_i_csdcnd
-    point_k = IAPWS97(P=p_k * 10 ** (-6), h=h_k)
-    T_k = point_k.T
-    s_k = point_k.s
-    v_k = point_k.v
-    point_k_v = IAPWS97(P=p_k * 10 ** (-6), x=0)
-    h_k_v = point_k_v.h
-    s_k_v = point_k_v.s
-    eta_oiI = (h_1 - h_0) / (h_1t - h_0)
-    p_pv = 1.4 * p_0
-    point_pv = IAPWS97(P=p_pv * 10 ** (-6), T=T_pv)
-    h_pv = point_pv.h
-    s_pv = point_pv.s
-    ksi_pp_oo = 1 - (1 - (T_k * (s_pp - s_k_v)) / ((h_0 - h_1t) + (h_pp - h_k_v))) / (
-                1 - (T_k * (s_pp - s_pv)) / ((h_0 - h_1t) + (h_pp - h_pv)))
-    # T_0_= IAPWS97(P = p_pv*10**(-6),x = 0).T
-    T_0_ = 374.2 + 273.15
-    T_ = (point_pv.T - point_k.T) / (T_0_ - point_k.T)
-    if T_ <= 0.636364:
-        ksi1 = -1.53 * T_ ** 2 + 2.1894 * T_ + 0.0048
-    elif 0.636364 < T_ <= 0.736364:
-        ksi1 = -1.3855 * T_ ** 2 + 2.0774 * T_ + 0.0321
-    elif 0.736364 < T_ <= 0.863636:
-        ksi1 = -2.6535 * T_ ** 2 + 4.2556 * T_ - 0.8569
 
-    if T_ <= 0.631818:
-        ksi2 = -1.7131 * T_ ** 2 + 2.3617 * T_ - 0.0142
-    elif 0.631818 < T_ <= 0.718182:
-        ksi2 = -2.5821 * T_ ** 2 + 3.689 * T_ - 0.4825
-    elif 0.718182 < T_ <= 0.827273:
-        ksi2 = -1.9864 * T_ ** 2 + 3.138 * T_ - 0.3626
-    elif 0.827273 < T_ <= 0.936364:
-        ksi2 = -2.0619 * T_ ** 2 + 3.3818 * T_ - 0.4814
-
-    ksi = (ksi1 + ksi2) / 2
-    ksi_r_pp = ksi * ksi_pp_oo
-    eta_ir = (H_i_cvd + H_i_csdcnd) / (H_i_cvd + (h_pp - h_k_v)) * 1 / (1 - ksi_r_pp)
-    H_i = eta_ir * ((h_0 - h_pv) + (h_pp - h_1))
-    eta_m = 0.994
-    eta_eg = 0.99
-    G_0 = N_e / (H_i * eta_m * eta_eg * (10 ** 3))
-    G_k = N_e / ((h_k - h_k_v) * eta_m * eta_eg * (10 ** 3)) * (1 / eta_ir - 1)
-
-    return G_0
-def Calculate_Gk(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
-    point_0 = IAPWS97(P=p_0 * 10 ** (-6), T=T_0)
-    s_0 = point_0.s
-    h_0 = point_0.h
-    v_0 = point_0.v
-    p_0_ = p_0 - 0.05 * p_0
-    point_p_0_ = IAPWS97(P=p_0_ * 10 ** (-6), h=h_0)
-    t_0_ = point_p_0_.T - 273.15
-    s_0_ = point_p_0_.s
-    v_0_ = point_p_0_.v
-
-    p_1t = p_pp + 0.1 * p_pp
-    point_1t = IAPWS97(P=p_1t * 10 ** (-6), s=s_0)
-    t_1t = point_1t.T - 273.15
-    h_1t = point_1t.h
-    v_1t = point_1t.v
-
-    point_pp = IAPWS97(P=p_pp * 10 ** (-6), T=T_pp)
-    h_pp = point_pp.h
-    s_pp = point_pp.s
-    v_pp = point_pp.v
-
-    H_0 = h_0 - h_1t
-    eta_oi = 0.85
-    H_i_cvd = H_0 * eta_oi
-
-    h_1 = h_0 - H_i_cvd
-    point_1 = IAPWS97(P=p_1t * 10 ** (-6), h=h_1)
-    s_1 = point_1.s
-    T_1 = point_1.T
-    v_1 = point_1.v
-    p_pp_ = p_pp - 0.03 * p_pp
-    point_pp_ = IAPWS97(P=p_pp_ * 10 ** (-6), h=h_pp)
-    s_pp_ = point_pp_.s
-    v_pp_ = point_pp_.v
-    point_kt = IAPWS97(P=p_k * 10 ** (-6), s=s_pp)
-    T_kt = point_kt.T
-    h_kt = point_kt.h
-    v_kt = point_kt.v
-    s_kt = s_pp
-    H_0_csdcnd = h_pp - h_kt
-    eta_oi = 0.85
-    H_i_csdcnd = H_0_csdcnd * eta_oi
-    h_k = h_pp - H_i_csdcnd
-    point_k = IAPWS97(P=p_k * 10 ** (-6), h=h_k)
-    T_k = point_k.T
-    s_k = point_k.s
-    v_k = point_k.v
-    point_k_v = IAPWS97(P=p_k * 10 ** (-6), x=0)
-    h_k_v = point_k_v.h
-    s_k_v = point_k_v.s
-    eta_oiI = (h_1 - h_0) / (h_1t - h_0)
-    p_pv = 1.4 * p_0
-    point_pv = IAPWS97(P=p_pv * 10 ** (-6), T=T_pv)
-    h_pv = point_pv.h
-    s_pv = point_pv.s
-    ksi_pp_oo = 1 - (1 - (T_k * (s_pp - s_k_v)) / ((h_0 - h_1t) + (h_pp - h_k_v))) / (
-                1 - (T_k * (s_pp - s_pv)) / ((h_0 - h_1t) + (h_pp - h_pv)))
-    # T_0_= IAPWS97(P = p_pv*10**(-6),x = 0).T
-    T_0_ = 374.2 + 273.15
-    T_ = (point_pv.T - point_k.T) / (T_0_ - point_k.T)
-    if T_ <= 0.636364:
-        ksi1 = -1.53 * T_ ** 2 + 2.1894 * T_ + 0.0048
-    elif 0.636364 < T_ <= 0.736364:
-        ksi1 = -1.3855 * T_ ** 2 + 2.0774 * T_ + 0.0321
-    elif 0.736364 < T_ <= 0.863636:
-        ksi1 = -2.6535 * T_ ** 2 + 4.2556 * T_ - 0.8569
-
-    if T_ <= 0.631818:
-        ksi2 = -1.7131 * T_ ** 2 + 2.3617 * T_ - 0.0142
-    elif 0.631818 < T_ <= 0.718182:
-        ksi2 = -2.5821 * T_ ** 2 + 3.689 * T_ - 0.4825
-    elif 0.718182 < T_ <= 0.827273:
-        ksi2 = -1.9864 * T_ ** 2 + 3.138 * T_ - 0.3626
-    elif 0.827273 < T_ <= 0.936364:
-        ksi2 = -2.0619 * T_ ** 2 + 3.3818 * T_ - 0.4814
-
-    ksi = (ksi1 + ksi2) / 2
-    ksi_r_pp = ksi * ksi_pp_oo
-    eta_ir = (H_i_cvd + H_i_csdcnd) / (H_i_cvd + (h_pp - h_k_v)) * 1 / (1 - ksi_r_pp)
-    H_i = eta_ir * ((h_0 - h_pv) + (h_pp - h_1))
-    eta_m = 0.994
-    eta_eg = 0.99
-    G_0 = N_e / (H_i * eta_m * eta_eg * (10 ** 3))
-    G_k = N_e / ((h_k - h_k_v) * eta_m * eta_eg * (10 ** 3)) * (1 / eta_ir - 1)
-
-    return G_k
-
-eta = [Calculate_eta(N_e = Ne, p_0 = p0, T_0 = T0, p_pp = p, T_pp = Tpp, p_k = pk, T_pv = Tpv) for p in ppp]
-G0 = [Calculate_G0(N_e = Ne, p_0 = p0, T_0 = T0, p_pp = p, T_pp = Tpp, p_k = pk, T_pv = Tpv) for p in ppp]
-Gk = [Calculate_Gk(N_e=Ne, p_0=p0, T_0=T0, p_pp=p, T_pp=Tpp, p_k=pk, T_pv=Tpv) for p in ppp]
 
 
 ppp_f = [float(x) * 10**(-6) for x in ppp]
