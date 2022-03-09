@@ -16,32 +16,37 @@ st.write("""# """)
 
 st.write(" *Исходные данные:* ")
 
-age = st.slider('Укажите максимальную границу Pпп', min_value = 2.1, max_value = 4.0, step = 0.1)
-age = age + 0.01
 
-Ne = 810e6
-p0 = 24.2e6
-t0 = 550
+
+
+Ne = st.number_input('Введите мощность Nэ, МВт', value = 810)*10**6
+p0 = st.number_input('Введите давление P0, МПа', value = 24.2)*10**6
+t0 = st.number_input('Введите температуру T0, °C', value = 550)
 T0 = t0+273.15
-P_pp = list(np.arange(2, age, 0.1)) #тут меняем
+
+tpp = st.number_input('Введите температуру Tпп, °C', value = 550)
+Tpp = tpp+273.15
+
+pk = st.number_input('Введите давление Pk, кПа', value = 3.7)*10**3
+
+tpv = st.number_input('Введите температуру Tпв, °C', value = 273)
+Tpv = tpv+273.15
+
+age = st.slider('Укажите максимальную границу Pпп', min_value = 2.0, max_value = 4.0, step = 0.1)
+age = age + 0.01
+P_pp = list(np.arange(2, age, 0.1))
 ppp = [p*1e6 for p in P_pp]
 p_pp_min = float(ppp[0])
 p_pp_max = float(ppp[-1])
-tpp = 550
-Tpp = tpp+273.15
-pk = 3.7e3
-tpv = 273
-Tpv = tpv+273.15
+
 delta_p_0 = 0.05*p0
 delta_p_pp = 0.08*p_pp_max
 delta_p = 0.03*p_pp_max
 
 z = 8
 
-
-
-
-
+st.write("""# """)
+st.write(" *Дано:* ")
 st.write(""" P0 = """ + str(p0*10**(-6)) + """ МПа""")
 st.write(""" t0 = """ + str(t0) + """ C""")
 st.write(""" Pпп = """ + str(p_pp_min*10**(-6)) + " - " + str('{:.2}'.format(p_pp_max*10**(-6))) + """ МПа""")
@@ -148,24 +153,25 @@ def Calculate_eta_G0_Gk(N_e, p_0, T_0, p_pp, T_pp, p_k, T_pv):
 
     return eta_ir, G_0, G_k
 
-
-eta, G0, Gk = [], [], []
+eta, G0, Gk =[], [], []
 for p in ppp:
-    eta_ = Calculate_eta_G0_Gk(N_e=Ne, p_0=p0, T_0=T0, p_pp=p, T_pp=Tpp, p_k=pk, T_pv=Tpv)
+    eta_ = Calculate_eta_G0_Gk(N_e = Ne, p_0 = p0, T_0 = T0, p_pp = p, T_pp = Tpp, p_k = pk, T_pv = Tpv)
     eta.append(eta_[0])
     G0.append(eta_[1])
     Gk.append(eta_[2])
 
-
-
+max: float = eta[0]
+pos = 0
+for i in range(len(eta)):
+    if eta[i] > max: max = eta[i]; pos = i
 
 
 ppp_f = [float(x) * 10**(-6) for x in ppp]
 eta_f = [float(x) * 100 for x in eta]
 
-st.write(""" Максимальное КПД = """ + str('{:.4}'.format(float(eta_f[-1]))) + """ %""")
-st.write(""" Расход пара на входе в турбину (G0) при макс. КПД = """ + str('{:.5}'.format(float(G0[-1]))) + """ кг/с""")
-st.write(""" Расход пара на входе в конденсатор (Gк) при макс. КПД = """ + str('{:.5}'.format(float(Gk[-1]))) + """ кг/с""")
+st.write(""" Максимальное КПД = """ + str('{:.4}'.format(float(eta_f[pos]))) + """ %""")
+st.write(""" Расход пара на входе в турбину (G0) при макс. КПД = """ + str('{:.5}'.format(float(G0[pos]))) + """ кг/с""")
+st.write(""" Расход пара на входе в конденсатор (Gк) при макс. КПД = """ + str('{:.5}'.format(float(Gk[pos]))) + """ кг/с""")
 st.write("""# """)
 st.write(" Табл. Зависимость КПД от Pпп  ")
 
@@ -198,6 +204,7 @@ st.pyplot(ppp__eta)
 
 st.title(""" """)
 
+p_pp_max = ppp[pos]
 
 fighs = plt.figure()
 
