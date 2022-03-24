@@ -559,21 +559,6 @@ if page == "Задание 2":
     #st.write(f'betta_2 = {betta_2:.2f}')
 
 
-    fig3 = plt.figure()
-    def plot_hs_stage_t(x_lim, y_lim):
-        plot_hs_nozzle_t(x_lim, y_lim)
-        plt.plot([point_0.s, point_1.s], [point_0.h, point_1.h], 'bo-')
-        plt.plot([point_1.s, point_2t.s], [point_1.h, point_2t.h], 'ro-')
-        plt.plot([point_1.s, point_1.s], [point_1w.h, point_1.h], 'ro-')
-        #plt.plot([point_1.s, ], [point_1w.h, ], 'ro-')
-        iso_bar(point_2t, -0.02, 0.02, 0.001, 'y')
-        iso_bar(point_1w, -0.005, 0.005, 0.001, 'c')
-    plt.ylabel('h кДж/кг')
-    plt.xlabel('s кДж/кг*К')
-    plt.title("h - s диаграмма")
-    plot_hs_stage_t([6.2, 6.22], [3240, 3360])
-    plt.grid(True)
-    st.pyplot(fig3)
 
     if betta_2 <= 15:
         RotorBlade = 'P-23-14A'
@@ -647,6 +632,36 @@ if page == "Задание 2":
     etta_ol1 = (E_0 * 1e3 - Delta_Hs - Delta_Hr - (1 - kappa_vs) * Delta_Hvs) / (E_0 * 1e3)
 
     etta_ol2 = (u * (c_1 * M.cos(M.radians(alpha_1)) + c_2 * M.cos(M.radians(alpha_2)))) / (E_0 * 1e3)
+
+
+    h_vs = h_2 + Delta_Hvs * 1e-3
+    point_vs = IAPWS97(P=point_2t.P, h=h_vs)
+
+
+    fig3 = plt.figure()
+    def plot_hs_stage_t(x_lim, y_lim):
+        plot_hs_nozzle_t(x_lim, y_lim)
+        plt.plot([point_0.s, point_1.s], [point_0.h, point_1.h], 'bo-')
+        plt.plot([point_1.s, point_2t.s], [point_1.h, point_2t.h], 'ro-')
+        #plt.plot([point_1.s, point_1.s], [point_1w.h, point_1.h], 'ro-')
+        plt.plot([point_1.s, point_2.s], [point_1.h, point_2.h], 'ro-')
+        plt.plot([point_2.s, point_vs.s], [point_2.h, point_vs.h], 'ro-')
+        iso_bar(point_2t, -0.02, 0.02, 0.001, 'y')
+        iso_bar(point_1w, -0.005, 0.005, 0.001, 'c')
+    plt.ylabel('h кДж/кг')
+    plt.xlabel('s кДж/кг*К')
+    plt.title("h - s диаграмма")
+    plot_hs_stage_t([6.2, 6.22], [3240, 3360])
+    plt.grid(True)
+    st.pyplot(fig3)
+
+
+
+
+
+
+
+
 
     c_1u = c_1 * M.cos(M.radians(alpha_1))
     c_1a = c_1 * M.sin(M.radians(alpha_1))
