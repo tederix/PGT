@@ -387,7 +387,7 @@ if page == "Задание 2":
         alpha1.append(alpha)
         eta.append(eta_ol)
     plt.plot(ucf, eta)
-    plt.ylabel('eta')
+    plt.ylabel('ηол')
     plt.xlabel('U/cф')
     plt.title("Зависимость ηол от U/cф")
     plt.grid(True)
