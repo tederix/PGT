@@ -403,9 +403,9 @@ if page == "Задание 2":
     st.write("Табл. Зависимость ηол от U/cф ")
     df = pd.DataFrame({
         "d, м": list(frange(0.9, 1.11, 0.01)),
-        "eta_ol": (eta),
-        "alpha": (alpha1),
-        "U_cf": (ucf)})      #Таблица
+        "ηол": (eta),
+        "α": (alpha1),
+        "U/cf": (ucf)})      #Таблица
     df
     st.write("""# """)
 
