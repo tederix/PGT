@@ -647,7 +647,7 @@ if page == "Задание 2":
         plt.plot([point_1.s, point_2.s], [point_1.h, point_2.h], 'ro-')
         plt.plot([point_2.s, point_vs.s], [point_2.h, point_vs.h], 'ro-')
         iso_bar(point_2t, -0.02, 0.02, 0.001, 'y')
-        iso_bar(point_1w, -0.005, 0.005, 0.001, 'c')
+        #iso_bar(point_1w, -0.005, 0.005, 0.001, 'c')
     plt.ylabel('h кДж/кг')
     plt.xlabel('s кДж/кг*К')
     plt.title("h - s диаграмма")
