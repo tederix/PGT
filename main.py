@@ -20,54 +20,54 @@ page = st.sidebar.selectbox(
     "Выберите задание",
     ("Задание 1", "Задание 2"))
 
+st.write(" *Исходные данные:* ")
+
+Ne = st.number_input('Введите мощность Nэ, МВт', value=810) * 10 ** 6
+p0 = st.number_input('Введите давление P0, МПа', value=24.2) * 10 ** 6
+t0 = st.number_input('Введите температуру T0, °C', value=550)
+T0 = t0 + 273.15
+
+tpp = st.number_input('Введите температуру Tпп, °C', value=550)
+Tpp = tpp + 273.15
+
+pk = st.number_input('Введите давление Pk, кПа', value=3.7) * 10 ** 3
+
+tpv = st.number_input('Введите температуру Tпв, °C', value=273)
+Tpv = tpv + 273.15
+
+age = st.slider('Укажите максимальную границу Pпп', min_value=2.0, max_value=4.0, step=0.1)
+age = age + 0.01
+P_pp = list(np.arange(2, age, 0.1))
+ppp = [p * 1e6 for p in P_pp]
+p_pp_min = float(ppp[0])
+p_pp_max = float(ppp[-1])
+
+delta_p_0 = 0.05 * p0
+delta_p_pp = 0.08 * p_pp_max
+delta_p = 0.03 * p_pp_max
+
+z = 8
+
+st.write("""# """)
+st.write(" *Дано:* ")
+st.write(""" P0 = """ + str(p0 * 10 ** (-6)) + """ МПа""")
+st.write(""" t0 = """ + str(t0) + """ C""")
+st.write(""" Pпп = """ + str(p_pp_min * 10 ** (-6)) + " - " + str('{:.2}'.format(p_pp_max * 10 ** (-6))) + """ МПа""")
+st.write(""" tпп = """ + str(tpp) + """ C """)
+st.write(""" Pк = """ + str(pk * 10 ** (-3)) + """ кПа """)
+st.write(""" tпв = """ + str(tpv) + """ C """)
+st.write(""" Nэ = """ + str(Ne * 10 ** (-6)) + """ МВт """)
+st.write(""" Z = """ + str(z) + """ шт """)
+
 if page == "Задание 1":
 
+
+
+
+    st.write("""# """)
     st.write("# Задание 1")
     st.write("""Построить процесс расширения пара в турбине. Определение расходов пара на входе в турбину (G0) и в конденсатор (Gк). Получить зависимость КПД ПТУ от параметра заданного в таблице.""")
     st.write("""# """)
-
-    st.write(" *Исходные данные:* ")
-
-
-
-
-    Ne = st.number_input('Введите мощность Nэ, МВт', value = 810)*10**6
-    p0 = st.number_input('Введите давление P0, МПа', value = 24.2)*10**6
-    t0 = st.number_input('Введите температуру T0, °C', value = 550)
-    T0 = t0+273.15
-
-    tpp = st.number_input('Введите температуру Tпп, °C', value = 550)
-    Tpp = tpp+273.15
-
-    pk = st.number_input('Введите давление Pk, кПа', value = 3.7)*10**3
-
-    tpv = st.number_input('Введите температуру Tпв, °C', value = 273)
-    Tpv = tpv+273.15
-
-    age = st.slider('Укажите максимальную границу Pпп', min_value = 2.0, max_value = 4.0, step = 0.1)
-    age = age + 0.01
-    P_pp = list(np.arange(2, age, 0.1))
-    ppp = [p*1e6 for p in P_pp]
-    p_pp_min = float(ppp[0])
-    p_pp_max = float(ppp[-1])
-
-    delta_p_0 = 0.05*p0
-    delta_p_pp = 0.08*p_pp_max
-    delta_p = 0.03*p_pp_max
-
-    z = 8
-
-    st.write("""# """)
-    st.write(" *Дано:* ")
-    st.write(""" P0 = """ + str(p0*10**(-6)) + """ МПа""")
-    st.write(""" t0 = """ + str(t0) + """ C""")
-    st.write(""" Pпп = """ + str(p_pp_min*10**(-6)) + " - " + str('{:.2}'.format(p_pp_max*10**(-6))) + """ МПа""")
-    st.write(""" tпп = """ + str(tpp) + """ C """)
-    st.write(""" Pк = """ + str(pk*10**(-3)) + """ кПа """)
-    st.write(""" tпв = """ + str(tpv) + """ C """)
-    st.write(""" Nэ = """ + str(Ne*10**(-6)) + """ МВт """)
-    st.write(""" Z = """ + str(z) + """ шт """)
-
 
 
     st.write("""# """)
