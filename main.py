@@ -651,7 +651,7 @@ if page == "Задание 2":
     plt.ylabel('h кДж/кг')
     plt.xlabel('s кДж/кг*К')
     plt.title("h - s диаграмма")
-    plot_hs_stage_t([6.2, 6.25], [3240, 3360])
+    plot_hs_stage_t([6.2, 6.23], [3240, 3360])
     plt.grid(True)
     st.pyplot(fig3)
 
