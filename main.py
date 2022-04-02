@@ -8,6 +8,10 @@ import pandas as pd
 from iapws import IAPWS97 as WSP
 import math as M
 
+from sympy import *
+from IPython.display import HTML, display
+
+
 
 
 
@@ -18,47 +22,9 @@ st.write("Github: " + "https://github.com/tederix/PGT")
 
 page = st.sidebar.selectbox(
     "Выберите задание",
-    ("Задание 1", "Задание 2"))
+    ("Задание 1", "Задание 2", "Задание 3"))
 
-st.write("""# """)
-st.write(" *Исходные данные:* ")
 
-Ne = st.number_input('Введите мощность Nэ, МВт', value=810) * 10 ** 6
-p0 = st.number_input('Введите давление P0, МПа', value=24.2) * 10 ** 6
-t0 = st.number_input('Введите температуру T0, °C', value=550)
-T0 = t0 + 273.15
-
-tpp = st.number_input('Введите температуру Tпп, °C', value=550)
-Tpp = tpp + 273.15
-
-pk = st.number_input('Введите давление Pk, кПа', value=3.7) * 10 ** 3
-
-tpv = st.number_input('Введите температуру Tпв, °C', value=273)
-Tpv = tpv + 273.15
-
-age = st.slider('Укажите максимальную границу Pпп', min_value=2.0, max_value=4.0, step=0.1)
-age = age + 0.01
-P_pp = list(np.arange(2, age, 0.1))
-ppp = [p * 1e6 for p in P_pp]
-p_pp_min = float(ppp[0])
-p_pp_max = float(ppp[-1])
-
-delta_p_0 = 0.05 * p0
-delta_p_pp = 0.08 * p_pp_max
-delta_p = 0.03 * p_pp_max
-
-z = 8
-
-st.write("""# """)
-st.write(" *Дано:* ")
-st.write(""" P0 = """ + str(p0 * 10 ** (-6)) + """ МПа""")
-st.write(""" t0 = """ + str(t0) + """ C""")
-st.write(""" Pпп = """ + str(p_pp_min * 10 ** (-6)) + " - " + str('{:.2}'.format(p_pp_max * 10 ** (-6))) + """ МПа""")
-st.write(""" tпп = """ + str(tpp) + """ C """)
-st.write(""" Pк = """ + str(pk * 10 ** (-3)) + """ кПа """)
-st.write(""" tпв = """ + str(tpv) + """ C """)
-st.write(""" Nэ = """ + str(Ne * 10 ** (-6)) + """ МВт """)
-st.write(""" Z = """ + str(z) + """ шт """)
 
 if page == "Задание 1":
 
@@ -69,6 +35,46 @@ if page == "Задание 1":
     st.write("# Задание 1")
     st.write("""Построить процесс расширения пара в турбине. Определение расходов пара на входе в турбину (G0) и в конденсатор (Gк). Получить зависимость КПД ПТУ от параметра заданного в таблице.""")
     st.write("""# """)
+
+    st.write(" *Исходные данные:* ")
+
+    Ne = st.number_input('Введите мощность Nэ, МВт', value=810) * 10 ** 6
+    p0 = st.number_input('Введите давление P0, МПа', value=24.2) * 10 ** 6
+    t0 = st.number_input('Введите температуру T0, °C', value=550)
+    T0 = t0 + 273.15
+
+    tpp = st.number_input('Введите температуру Tпп, °C', value=550)
+    Tpp = tpp + 273.15
+
+    pk = st.number_input('Введите давление Pk, кПа', value=3.7) * 10 ** 3
+
+    tpv = st.number_input('Введите температуру Tпв, °C', value=273)
+    Tpv = tpv + 273.15
+
+    age = st.slider('Укажите максимальную границу Pпп', min_value=2.0, max_value=4.0, step=0.1)
+    age = age + 0.01
+    P_pp = list(np.arange(2, age, 0.1))
+    ppp = [p * 1e6 for p in P_pp]
+    p_pp_min = float(ppp[0])
+    p_pp_max = float(ppp[-1])
+
+    delta_p_0 = 0.05 * p0
+    delta_p_pp = 0.08 * p_pp_max
+    delta_p = 0.03 * p_pp_max
+
+    z = 8
+
+    st.write("""# """)
+    st.write(" *Дано:* ")
+    st.write(""" P0 = """ + str(p0 * 10 ** (-6)) + """ МПа""")
+    st.write(""" t0 = """ + str(t0) + """ C""")
+    st.write(
+        """ Pпп = """ + str(p_pp_min * 10 ** (-6)) + " - " + str('{:.2}'.format(p_pp_max * 10 ** (-6))) + """ МПа""")
+    st.write(""" tпп = """ + str(tpp) + """ C """)
+    st.write(""" Pк = """ + str(pk * 10 ** (-3)) + """ кПа """)
+    st.write(""" tпв = """ + str(tpv) + """ C """)
+    st.write(""" Nэ = """ + str(Ne * 10 ** (-6)) + """ МВт """)
+    st.write(""" Z = """ + str(z) + """ шт """)
 
 
     st.write("""# """)
@@ -82,6 +88,7 @@ if page == "Задание 1":
         h_0 = point_0.h
         v_0 = point_0.v
         p_0_ = p_0-0.05*p_0
+
         point_p_0_ = IAPWS97(P=p_0_*10**(-6), h=h_0)
         t_0_ = point_p_0_.T-273.15
         s_0_ = point_p_0_.s
@@ -109,6 +116,7 @@ if page == "Задание 1":
         s_1 = point_1.s
         T_1 = point_1.T
         v_1 = point_1.v
+
         p_pp_ = p_pp - 0.03*p_pp
         point_pp_ = IAPWS97(P=p_pp_*10**(-6),h = h_pp)
         s_pp_ = point_pp_.s
@@ -283,16 +291,49 @@ if page == "Задание 1":
 
     st.pyplot(fighs)
 
-
 if page == "Задание 2":
-    st.write(""" dp.c. = """ + str(0.9) + " - " + str(1.1) + """ м """)
-    st.write(""" n = """ + str(50) + """ Гц """)
-    st.write(""" H0 = """ + str(100) + """ кДж/кг """)
+
 
     st.write("# Задание 2")
 
     st.write("""Проведение расчета регулирующей ступени и определение зависимости ηол от U/cф.""")
     st.write("""# """)
+
+    st.write(" *Исходные данные:* ")
+
+    d = 1.1  # m
+
+    n = 50  # Гц
+    H_0 = 100  # кДж/кг
+    rho = 0.05
+    l_1 = 0.0265  # м
+    alpha_1 = 12  # град
+    b_1 = 0.06  # м
+    Delta = 0.003  # м
+    b_2 = 0.03  # м
+    kappa_vs = 0  # коэф исп вых скорости
+
+    Ne = st.number_input('Введите мощность Nэ, МВт', value=810) * 10 ** 6
+    p_0 = st.number_input('Введите давление P0, МПа', value=24.2)
+    t_0 = st.number_input('Введите температуру T0, °C', value=550)
+    T_0 = t_0 + 273.15
+    G_0 = st.number_input('Введите расход пара на входе в турбину G0, кг/с', value=656.17)
+    H_0 = st.number_input('Введите теплоперепад H0, кДж/кг', value=100)
+    z = 8
+
+    st.write("""# """)
+    st.write(" *Дано:* ")
+    st.write(""" P0 = """ + str(p_0) + """ МПа""")
+    st.write(""" t0 = """ + str(t_0) + """ C""")
+    st.write(""" Nэ = """ + str(Ne * 10 ** (-6)) + """ МВт """)
+    st.write(""" Z = """ + str(z) + """ шт """)
+    st.write(""" dp.c. = """ + str(0.9) + " - " + str(1.1) + """ м """)
+    st.write(""" n = """ + str(50) + """ Гц """)
+    st.write(""" G0 = """ + str(G_0) + """ кг/с """)
+    st.write(""" H0 = """ + str(H_0) + """ кДж/кг """)
+
+    st.write("""# """)
+    st.write(" *Решение:* ")
 
 
     def iso_bar(wsp_point, min_s=-0.1, max_s=0.11, step_s=0.011, color='r'):
@@ -303,23 +344,6 @@ if page == "Задание 2":
             iso_bar_0_s = np.arange(wsp_point[0].s + min_s, wsp_point[1].s + max_s, step_s).tolist()
             iso_bar_0_h = [WSP(P=wsp_point[1].P, s=i).h for i in iso_bar_0_s]
         plt.plot(iso_bar_0_s, iso_bar_0_h, color)
-
-
-    d = 1.1  # m
-    p_0 = 24.2
-    T_0 = 550 + 273.15
-    n = 50  # Гц
-    G_0 = 656.17
-    H_0 = 100  # кДж/кг
-    rho = 0.05
-    l_1 = 0.0265  # м
-    alpha_1 = 12  # град
-    b_1 = 0.06  # м
-    Delta = 0.003  # м
-    b_2 = 0.03  # м
-    kappa_vs = 0  # коэф исп вых скорости
-
-
 
     def callculate_optimum(d, p_0, T_0, n, G_0, H_0, rho, l_1, alpha_1, b_1, Delta, b_2, kappa_vs):
         u = M.pi * d * n
@@ -750,9 +774,238 @@ if page == "Задание 2":
     st.write("""Внутренний относительный КПД ступени   eta_oi = %.3f """ % eta_oi)
     st.write("""Внутреняя мощность ступени  N_i = %.2f кВт""" % N_i)
 
+if page == "Задание 3":
+
+
+    st.write("# Задание 3")
+
+    st.write("""Определение числа ступеней и распределение параметров по ним""")
+    st.write("""# """)
+
+    st.write(" *Исходные данные:* ")
+
+    drs = st.number_input('Введите диаметр регулирующей ступени, м', value=1.1)
+    P0 = st.number_input('Введите давление полного торможения перед нерегулируемой ступенью P0, МПа', value=24.2)
+    h0 = st.number_input('Введите энтальпия полного торможения перед первой нерегулируемой ступенью h0, кДж/кг', value=2500)
+    G0 = st.number_input('Введите расход пара в первую нерегулируемую ступень, кг/с', value=656.17)
+    etaoi = st.number_input('Введите внутренний КПД ЦВД ', value=0.799, max_value=1.000)
+    Z = st.number_input('Введите количество ступеней ЦВД ', value=8)
+    Pz = st.number_input('Введите давление за ЦВД, МПа ', value=4.4)
+
+
+    deltaD = 0.26 #m
+    n = 50  # Гц
+    rho_s = 0.05
+    alfa = 15  # град
+    fi = 0.96
+    mu1 = 0.97
+    delta = 0.003
+    tetta = 20
+
+    st.write("""# """)
+    st.write(" *Дано:* ")
+    st.write(""" P0 = """ + str(P0) + """ МПа""")
+    st.write(""" h0 = """ + str(h0) + """ кДж/кг""")
+    st.write(""" dрс = """ + str(drs) + """ м """)
+    st.write(""" Z = """ + str(Z) + """ шт """)
+    st.write(""" G0 = """ + str(G0) + """ кг/с """)
+    st.write(""" n = """ + str(n) + """ Гц """)
+    st.write(""" eta_oi = """ + str(etaoi) + """ """)
+    st.write(""" Pz = """ + str(Pz) + """ МПа """)
 
 
 
 
+    st.write("""# """)
+    st.write(" *Решение:* ")
 
+
+    D1 = drs - deltaD
+    sat_steam = IAPWS97(P=P0, h=h0)
+    s_0 = sat_steam.s
+    t_0 = sat_steam.T
+
+    error = 2
+    i = 1
+    while error > 0.5:
+        rho = rho_s + 1.8 / (tetta + 1.8)
+        X = (fi * M.cos(M.radians(alfa))) / (2 * M.sqrt(1 - rho))
+        H01 = 12.3 * (D1 / X) ** 2 * (n / 50) ** 2
+        h2t = h0 - H01
+        steam2t = IAPWS97(h=h2t, s=s_0)
+        v2t = steam2t.v
+        l11 = G0 * v2t * X / (M.pi ** 2 * D1 ** 2 * n * M.sqrt(1 - rho) * M.sin(M.radians(alfa)) * mu1)
+        tetta_old = tetta
+        tetta = D1 / l11
+        #print(i, tetta_old, tetta)
+        error = abs(tetta - tetta_old) / tetta_old * 100
+        #print(error)
+        i += 1
+
+    l21 = l11 + delta
+    d_s = D1 - l21
+    steam_tz = IAPWS97(P=Pz, s=s_0)
+    h_zt = steam_tz.h
+    H0 = h0 - h_zt
+    Hi = H0 * etaoi
+    h_z = h0 - Hi
+    steam_z = IAPWS97(P=Pz, h=h_z)
+    v_2z = steam_z.v
+    x = Symbol('x')
+    с = solve(x ** 2 + x * d_s - (l21 * (d_s + l21) * v_2z / v2t))
+    for j in с:
+        if j > 0:
+            l2z = j
+    d2z = d_s + l2z
+    tetta1 = (l21 + d_s) / l21
+    tettaz = (l2z + d_s) / l2z
+    rho1 = rho_s + 1.8 / (1.8 + tetta1)
+    rhoz = rho_s + 1.8 / (1.8 + tettaz)
+    X1 = (fi * cos(M.radians(alfa))) / (2 * sqrt(1 - rho1))
+    Xz = (fi * cos(M.radians(alfa))) / (2 * sqrt(1 - rhoz))
+
+    DeltaZ = 1
+    ite = 0
+    while DeltaZ > 0:
+        matr = []
+        Num = 0
+        SumH = 0
+        for _ in range(int(Z)):
+            li = (l21 - l2z) / (1 - Z) * Num + l21
+            di = (D1 - d2z) / (1 - Z) * Num + D1
+            tetta_i = di / li
+            rho_i = rho_s + 1.8 / (1.8 + tetta_i)
+            X_i = (fi * M.cos(M.radians(alfa))) / (2 * M.sqrt(1 - rho_i))
+            if Num < 1:
+                H_i = 12.3 * (di / X_i) ** 2 * (n / 50) ** 2
+            else:
+                H_i = 12.3 * (di / X_i) ** 2 * (n / 50) ** 2 * 0.95
+            Num = Num + 1
+            H_d = 0
+            SumH = SumH + H_i
+            matr.append([Num, round(di, 3), round(li, 3), round(tetta_i, 2), round(rho_i, 3), round(X_i, 3), round(H_i, 2),round(H_d, 2)])
+        H_m = SumH / Z
+        q_t = 4.8 * 10 ** (-4) * (1 - etaoi) * H0 * (Z - 1) / Z
+        Z_new = round(H0 * (1 + q_t) / H_m)
+        DeltaZ = abs(Z - Z_new)
+        #print(ite, Z)
+        Z = Z_new
+        ite += 1
+    DeltaH = (H0 * (1 + q_t) - SumH) / Z
+    a = 0
+    for elem in matr:
+        matr[a][7] = round(elem[6]+DeltaH,2)
+        a += 1
+
+
+    ## Добавлено для таблицы
+    N_=[]
+    di_=[]
+    li_=[]
+    tettai_=[]
+    rhoi_=[]
+    Xi_=[]
+    Hi_=[]
+    Hdi_=[]
+    a = 0
+    for elem in matr:
+        N_.append(matr[a][0])
+        di_.append(matr[a][1])
+        li_.append(matr[a][2])
+        tettai_.append(matr[a][3])
+        rhoi_.append(matr[a][4])
+        Xi_.append(matr[a][5])
+        Hi_.append(matr[a][6])
+        Hdi_.append(matr[a][7])
+        a += 1
+
+    di_ = [float(x) for x in di_]
+    li_ = [float(x) for x in li_]
+    tettai_ = [float(x) for x in tettai_]
+    rhoi_ = [float(x) for x in rhoi_]
+    Xi_ = [float(x) for x in Xi_]
+    Hi_ = [float(x) for x in Hi_]
+    Hdi_ = [float(x) for x in Hdi_]
+
+    ## Таблица
+    table=pd.DataFrame( {"№ ступени": (N_),
+                           "di, м": (di_),
+                           "li, м": (li_),
+                           "θi ": (tettai_),
+                           "ρi ": (rhoi_),
+                           "Xi ": (Xi_),
+                           "Hi, кДж/кг": (Hi_),
+                           "Hi + Δ, кДж/кг": (Hdi_)
+                           }
+                       )
+
+    st.dataframe(table)
+
+    ## Графики
+    z =[]
+    for a in range(1, Z+1):
+        z.append(a)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, di_, '-ro')
+    plt.title('Рисунок 1. Распределение средних диаметров по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, li_, '-ro')
+    plt.title('Рисунок 2. Распределение высот лопаток по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, tettai_, '-ro')
+    plt.title('Рисунок 3. Распределение обратной веерности по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, rhoi_, '-ro')
+    plt.title('Рисунок 4. Распределение степени реактивности по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, Xi_, '-ro')
+    plt.title('Рисунок 5. Распределение U/Cф по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, Hi_, '-ro')
+    plt.title('Рисунок 6. Распределение теплоперепадов по проточной части')
+    st.pyplot(fig)
+
+    st.write("#")
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.gca()
+    ax.set_xticks(np.arange(1, 15, 1))
+    plt.grid(True)
+    plt.plot(z, Hdi_, '-ro')
+    plt.title('Рисунок 7. Распределение теплоперепадов с учетом невязки по проточной части')
+    st.pyplot(fig)
 
