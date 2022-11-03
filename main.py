@@ -12,7 +12,7 @@ from sympy import *
 
 
 
-st.write("Выполнено: Мурашов.В ФПэ-01-19")
+st.write("Выполнено: Мурашов.В. ФПэ-01-19")
 st.write("Github: " + "https://github.com/tederix/PGT")
 
 
